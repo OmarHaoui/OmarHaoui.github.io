@@ -244,6 +244,69 @@ section{padding:100px 60px;max-width:1200px;margin:0 auto}
 #go-top:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(124,109,255,.6)}
 #go-top svg{width:18px;height:18px;stroke:#fff;stroke-width:2.5;fill:none}
 
+/* ── Project media — clickable ── */
+.project-media{cursor:pointer}
+.project-media img{transition:transform .4s ease}
+.project-media:hover img{transform:scale(1.04)}
+.media-quick-btn{
+  position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+  background:rgba(4,4,8,.82);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.14);border-radius:100px;
+  padding:5px 14px;font-size:11px;font-family:var(--mono);color:var(--text);
+  white-space:nowrap;pointer-events:none;
+  opacity:0;transition:opacity .25s;z-index:2}
+.project-media:hover .media-quick-btn{opacity:1}
+
+/* ── Lightbox ── */
+#lightbox{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(4,4,8,.95);backdrop-filter:blur(24px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  opacity:0;pointer-events:none;transition:opacity .25s}
+#lightbox.active{opacity:1;pointer-events:auto}
+.lb-close{
+  position:absolute;top:20px;right:24px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  color:var(--t2);font-size:18px;width:40px;height:40px;border-radius:50%;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s;z-index:2}
+.lb-close:hover{background:rgba(255,255,255,.15);color:var(--text)}
+.lb-stage{
+  display:flex;align-items:center;gap:14px;
+  max-width:min(92vw,720px);width:100%;padding:0 4px}
+.lb-img-wrap{
+  position:relative;flex:1;display:flex;align-items:center;justify-content:center;
+  max-height:70vh}
+#lb-img{
+  max-width:100%;max-height:70vh;object-fit:contain;
+  border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.8);display:block}
+.lb-action{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:3}
+.lb-action a{
+  display:inline-flex;align-items:center;gap:7px;
+  background:linear-gradient(135deg,var(--v),var(--c));color:#fff;
+  padding:8px 22px;border-radius:100px;font-size:13px;font-weight:500;
+  text-decoration:none;white-space:nowrap;transition:opacity .2s;
+  box-shadow:0 4px 20px rgba(124,109,255,.5)}
+.lb-action a:hover{opacity:.85}
+.lb-arrow{
+  flex-shrink:0;width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  color:#fff;cursor:pointer;transition:background .2s;
+  display:flex;align-items:center;justify-content:center;font-size:24px;line-height:1}
+.lb-arrow:hover{background:rgba(255,255,255,.18)}
+.lb-dots{display:flex;gap:8px;align-items:center;justify-content:center;min-height:16px}
+.lb-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.22);transition:background .2s,transform .2s}
+.lb-dot.active{background:var(--v2);transform:scale(1.5)}
+@media(max-width:600px){
+  .lb-stage{gap:6px}
+  .lb-arrow{width:34px;height:34px;font-size:20px}
+  #lb-img{border-radius:8px}
+  .lb-action a{font-size:12px;padding:7px 16px}
+}
+
 /* ── Contact ── */
 .contact-section{padding:100px 60px;max-width:1000px;margin:0 auto;text-align:center}
 .contact-box{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rxl);padding:60px;
@@ -292,8 +355,12 @@ footer{border-top:1px solid var(--border);padding:32px 60px;display:flex;align-i
   nav{padding:16px 24px}
   .nav-links{display:none}
   .hero{padding:100px 24px 60px}
-  .hero-inner{grid-template-columns:1fr;gap:40px}
-  .hero-avatar-wrap{display:none}
+  .hero-inner{grid-template-columns:1fr;gap:32px;justify-items:center}
+  .hero-avatar-wrap{order:-1}
+  .hero-avatar{width:180px;height:180px}
+  .hero-text{text-align:center}
+  .hero-btns{justify-content:center}
+  .hero-stats{justify-content:center;gap:28px}
   section,.exp-section{padding:70px 24px}
   .about-grid{grid-template-columns:1fr}
   .skills-section,.projects-section,.contact-section{padding:70px 24px}
@@ -334,7 +401,7 @@ footer{border-top:1px solid var(--border);padding:32px 60px;display:flex;align-i
   <div class="orb orb3"></div>
 
   <div class="hero-inner">
-    <div>
+    <div class="hero-text">
       <div class="hero-tag">Available for opportunities</div>
       <h1>
         <span class="h1-name">Omar Haoui</span>
@@ -1134,6 +1201,22 @@ footer{border-top:1px solid var(--border);padding:32px 60px;display:flex;align-i
 </footer>
 
 
+<!-- ════════════════════════════════════════════
+     LIGHTBOX
+════════════════════════════════════════════ -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lb-close" onclick="lbClose()" aria-label="Close">✕</button>
+  <div class="lb-stage">
+    <button class="lb-arrow" id="lb-prev" aria-label="Previous">‹</button>
+    <div class="lb-img-wrap">
+      <img id="lb-img" src="" alt="">
+      <div id="lb-action" class="lb-action"></div>
+    </div>
+    <button class="lb-arrow" id="lb-next" aria-label="Next">›</button>
+  </div>
+  <div id="lb-dots" class="lb-dots"></div>
+</div>
+
 <script>
 /* ── Scroll reveal ── */
 const revealEls = document.querySelectorAll('.reveal');
@@ -1174,6 +1257,113 @@ window.addEventListener('scroll', () => {
     a.style.color = a.getAttribute('href') === '#' + current ? '#eeeef8' : '';
   });
 });
+
+/* ── Lightbox carousel ── */
+(function(){
+  let lbImgs = [], lbIdx = 0, lbLink = null;
+
+  function getPrimaryLink(card) {
+    const links = [...card.querySelectorAll('.project-links a')]
+      .filter(a => !a.classList.contains('placeholder-link'));
+    const kws = ['visit', 'website', 'play', 'app store', 'github'];
+    for (const kw of kws) {
+      const found = links.find(a => a.textContent.toLowerCase().includes(kw));
+      if (found) return found;
+    }
+    return links[0] || null;
+  }
+
+  // Wire up each project-media that has images
+  document.querySelectorAll('.project-media').forEach(media => {
+    const imgEls = [...media.querySelectorAll('img')];
+    if (!imgEls.length) return;
+
+    const card = media.closest('.project-card');
+    const primary = getPrimaryLink(card);
+
+    // Hover quick-action pill
+    if (primary) {
+      const pill = document.createElement('div');
+      pill.className = 'media-quick-btn';
+      pill.textContent = primary.textContent.trim();
+      media.appendChild(pill);
+    }
+
+    media.addEventListener('click', () => lbOpen(imgEls, primary));
+  });
+
+  function lbOpen(imgEls, link) {
+    lbImgs = imgEls; lbIdx = 0; lbLink = link;
+    lbRender();
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  window.lbClose = function() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+  };
+
+  function lbRender() {
+    const img = lbImgs[lbIdx];
+    document.getElementById('lb-img').src = img.src;
+    document.getElementById('lb-img').alt = img.alt || '';
+
+    // Action button
+    const action = document.getElementById('lb-action');
+    if (lbLink) {
+      action.innerHTML = `<a href="${lbLink.href}" target="_blank" rel="noopener">${lbLink.textContent.trim()}</a>`;
+      action.style.display = '';
+    } else {
+      action.style.display = 'none';
+    }
+
+    // Arrows
+    const multi = lbImgs.length > 1;
+    document.getElementById('lb-prev').style.display = multi ? 'flex' : 'none';
+    document.getElementById('lb-next').style.display = multi ? 'flex' : 'none';
+
+    // Dots
+    const dots = document.getElementById('lb-dots');
+    dots.style.display = multi ? 'flex' : 'none';
+    dots.innerHTML = lbImgs.map((_, i) =>
+      `<span class="lb-dot${i === lbIdx ? ' active' : ''}"></span>`
+    ).join('');
+  }
+
+  document.getElementById('lb-prev').addEventListener('click', e => {
+    e.stopPropagation();
+    lbIdx = (lbIdx - 1 + lbImgs.length) % lbImgs.length;
+    lbRender();
+  });
+  document.getElementById('lb-next').addEventListener('click', e => {
+    e.stopPropagation();
+    lbIdx = (lbIdx + 1) % lbImgs.length;
+    lbRender();
+  });
+  document.getElementById('lightbox').addEventListener('click', e => {
+    if (e.target.id === 'lightbox') lbClose();
+  });
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lightbox').classList.contains('active')) return;
+    if (e.key === 'Escape') lbClose();
+    if (e.key === 'ArrowLeft')  { lbIdx = (lbIdx - 1 + lbImgs.length) % lbImgs.length; lbRender(); }
+    if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbImgs.length; lbRender(); }
+  });
+
+  // Touch swipe
+  let touchX = 0;
+  document.getElementById('lb-img').addEventListener('touchstart', e => {
+    touchX = e.touches[0].clientX;
+  }, {passive:true});
+  document.getElementById('lb-img').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) {
+      lbIdx = dx < 0 ? (lbIdx+1)%lbImgs.length : (lbIdx-1+lbImgs.length)%lbImgs.length;
+      lbRender();
+    }
+  });
+})();
 </script>
 
 </body>
